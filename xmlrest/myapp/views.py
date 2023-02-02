@@ -9,7 +9,7 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from .models import *
 from json import loads
-
+from json2xml import json2xml
 import xmltodict,dicttoxml
 
 from rest_framework.views import APIView
