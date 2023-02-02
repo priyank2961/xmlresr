@@ -19,7 +19,7 @@ class CustomViewSet(ListModelMixin,RetrieveModelMixin,CreateModelMixin,GenericAP
     queryset = student.objects.all()
     serializer_class = StudentSerializer
     parser_classes = [XMLParser]
-    renderer_classes = [XMLRenderer]
+    # renderer_classes = [XMLRenderer]
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
@@ -35,7 +35,7 @@ class CallXml(APIView):
         return Response(x)
     
     def post(self,request,format = None):
-        headers = {'Content-Type': 'application/xml'} 
+        # headers = {'Content-Type': 'application/xml'} 
         x = requests.post('http://127.0.0.1:8000/student',data=json2xml.Json2xml(request.data).to_xml(),headers=headers)
         x = xmltodict.parse(x.text)
         # return Response() 
