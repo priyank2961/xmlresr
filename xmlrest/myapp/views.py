@@ -19,7 +19,7 @@ class CustomViewSet(ListModelMixin,RetrieveModelMixin,CreateModelMixin,GenericAP
     queryset = student.objects.all()
     serializer_class = StudentSerializer
     parser_classes = [XMLParser]
-    # renderer_classes = [XMLRenderer]
+    renderer_classes = [XMLRenderer]
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
