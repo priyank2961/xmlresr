@@ -15,7 +15,7 @@ import xmltodict,dicttoxml
 from rest_framework.views import APIView
 import requests
 
-class CustomViewSet(ListModelMixin,RetrieveModelMixin,CreateModelMixin,GenericAPIView):
+class CustomViewSet(ListModelMixin,RetrieveModelMixin,UpdateModelMixin,CreateModelMixin,GenericAPIView):
     queryset = student.objects.all()
     serializer_class = StudentSerializer
     parser_classes = [XMLParser]
@@ -26,7 +26,13 @@ class CustomViewSet(ListModelMixin,RetrieveModelMixin,CreateModelMixin,GenericAP
 
     def post(self, request, *args, **kwargs):
         return self.create( request, *args, **kwargs)
-
+    
+    def put(self, request, *args, **kwargs):
+        return super().update(request, *args, **kwargs)
+    
+    def patch(self, request, *args, **kwargs):
+        return super().partial_update(request, *args, **kwargs)
+    
 class CallXml(APIView):
 
     def get(self,request,format = None):
@@ -35,8 +41,23 @@ class CallXml(APIView):
         return Response(x)
     
     def post(self,request,format = None):
-        # headers = {'Content-Type': 'application/xml'} 
-        x = requests.post('http://127.0.0.1:8000/student',data=json2xml.Json2xml(request.data).to_xml(),headers=headers)
+        headers = {'Content-Type': 'application/xml'} 
+        # x = requests.post('http://127.0.0.1:8000/student',data=json2xml.Json2xml(request.data).to_xml(),headers=headers)
+        x = xmltodict.parse(x.text)
+        # return Response() 
+        return Response(x)
+    
+    def put(self, request, pk, format=None):
+        print("not here")
+        headers = {'Content-Type': 'application/xml'} 
+        x = requests.put(f'http://127.0.0.1:8000/student/{pk}/',data=json2xml.Json2xml(request.data).to_xml(),headers=headers)
+        x = xmltodict.parse(x.text)
+        # return Response() 
+        return Response(x)
+    
+    def patch(self, request, pk, format=None):
+        headers = {'Content-Type': 'application/xml'} 
+        x = requests.patch(f'http://127.0.0.1:8000/student/{pk}/',data=json2xml.Json2xml(request.data).to_xml(),headers=headers)
         x = xmltodict.parse(x.text)
         # return Response() 
         return Response(x)
