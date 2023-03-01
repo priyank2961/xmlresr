@@ -15,7 +15,7 @@ import xmltodict,dicttoxml
 from rest_framework.views import APIView
 import requests
 
-class CustomViewSet(ListModelMixin,RetrieveModelMixin,UpdateModelMixin,CreateModelMixin,GenericAPIView):
+class CustomViewSet(ListModelMixin,RetrieveModelMixin,UpdateModelMixin,CreateModelMixin,DestroyModelMixin,GenericAPIView):
     queryset = student.objects.all()
     serializer_class = StudentSerializer
     parser_classes = [XMLParser]
@@ -32,6 +32,10 @@ class CustomViewSet(ListModelMixin,RetrieveModelMixin,UpdateModelMixin,CreateMod
     
     def patch(self, request, *args, **kwargs):
         return super().partial_update(request, *args, **kwargs)
+    
+    def delete(self, request, *args, **kwargs):
+        super().destroy(request, *args, **kwargs)
+        return Response({"msg":"student deleted successfully"},status=status.HTTP_202_ACCEPTED)
     
 class CallXml(APIView):
 
@@ -58,6 +62,13 @@ class CallXml(APIView):
     def patch(self, request, pk, format=None):
         headers = {'Content-Type': 'application/xml'} 
         x = requests.patch(f'http://127.0.0.1:8000/student/{pk}/',data=json2xml.Json2xml(request.data).to_xml(),headers=headers)
+        x = xmltodict.parse(x.text)
+        # return Response() 
+        return Response(x)
+    
+    def delete(self, request, pk, format=None):
+        headers = {'Content-Type': 'application/xml'} 
+        x = requests.delete(f'http://127.0.0.1:8000/student/{pk}/',headers=headers)
         x = xmltodict.parse(x.text)
         # return Response() 
         return Response(x)
